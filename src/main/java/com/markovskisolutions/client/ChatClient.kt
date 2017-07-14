@@ -16,28 +16,29 @@ import org.slf4j.LoggerFactory
 */
 
 class ChatClient {
-    val logger = LoggerFactory.getLogger("ChatClient")
     val SERVER_HOSTNAME: String = "localhost"
     var KEEP_ALIVE_MESSAGE: String = "!keep-alive"
-    val SERVER_PORT: Int = 2002
+    val SERVER_PORT: Int = 20021
 
-    fun main(args: Array<String>) {
+   open fun main(args: Array<String>) {
         try {
             var socket: Socket = Socket(SERVER_HOSTNAME, SERVER_PORT)
             var mSocketReader: BufferedReader = BufferedReader(InputStreamReader(socket.inputStream))
             var mSocketWriter: PrintWriter = PrintWriter(OutputStreamWriter(socket.outputStream))
-            logger.info("Connected to the server : >> ${SERVER_HOSTNAME} : ${SERVER_PORT} >> please add message")
+            println("Connected to the server : >> ${SERVER_HOSTNAME} : ${SERVER_PORT} >> please add message")
+            // Start socket --> console transmitter thread
             var consoleWriter: PrintWriter = PrintWriter(System.out)
             var socketToConsoleTransmitter: TextDataTransmitter = TextDataTransmitter(mSocketReader, consoleWriter)
             socketToConsoleTransmitter.setDaemon(false)
             socketToConsoleTransmitter.start()
 
+            // Start console --> socket transmitter thread
             var consoleReader: BufferedReader = BufferedReader(InputStreamReader(System.`in`))
             var consoleToSocketTransmitter: TextDataTransmitter = TextDataTransmitter(consoleReader, mSocketWriter)
             consoleToSocketTransmitter.setDaemon(false)
             consoleToSocketTransmitter.start()
         } catch(e: IOException) {
-            logger.error("Can not connect to ${SERVER_HOSTNAME} : ${SERVER_PORT} ")
+            println("Can not connect to ${SERVER_HOSTNAME} : ${SERVER_PORT} ")
             e.printStackTrace();
             System.exit(-1)
         }

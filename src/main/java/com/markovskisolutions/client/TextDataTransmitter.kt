@@ -16,13 +16,15 @@ import org.slf4j.LoggerFactory
 */
 
 class TextDataTransmitter : Thread {
-    val logger = LoggerFactory.getLogger("TextDataTransmitter")
     val inputStream: InputStream = System.`in`
     var mReader: BufferedReader = BufferedReader(InputStreamReader(inputStream))
     var output: OutputStream = System.out
     var mWriter: PrintWriter = PrintWriter(OutputStreamWriter(output))
 
-    constructor(mReader: BufferedReader, mWriter: PrintWriter)
+    constructor(aReader: BufferedReader, aWriter: PrintWriter){
+        mReader=aReader
+        mWriter=aWriter
+    }
 
     override fun run(): Unit {
         try {
@@ -34,7 +36,7 @@ class TextDataTransmitter : Thread {
                 }
             }
         } catch(e: IOException) {
-            logger.error("Lost connection to server")
+            println("Lost connection to server")
             System.exit(-1)
         }
     }

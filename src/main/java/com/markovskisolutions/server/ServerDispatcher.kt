@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory
 */
 
 class ServerDispatcher : Thread {
-    private val logger = LoggerFactory.getLogger("ServerDispatcher")
     private val mMessageQueue by lazy { Vector<String>() }
     private val mClients by lazy { Vector<Client>() }
     private val lock = java.lang.Object()
@@ -48,9 +47,8 @@ class ServerDispatcher : Thread {
         var dateFormat: DateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         var cal: Calendar = Calendar.getInstance()
         var socket: Socket = aClient.mSocket
-        var senderIP: String = socket.getInetAddress().getHostAddress()
-        var senderPort: String = " ${socket.getPort()}"
-        var concatenate = "${senderIP} : ${senderPort} : ${dateFormat.format(cal.getTime())} >> ${aMessage}"
+
+        var concatenate = "${socket.getInetAddress().getHostAddress()} : ${socket.getPort()} : ${dateFormat.format(cal.getTime())} >> ${aMessage}"
         mMessageQueue.add(concatenate)
         lock.notify()
 
@@ -63,7 +61,7 @@ class ServerDispatcher : Thread {
      */
     @Throws(InterruptedException::class)
     @Synchronized private fun getNextMessageFromQueue(): String {
-        while (mMessageQueue.isEmpty())
+        while (mMessageQueue.size==0)
             lock.wait()
         var message: String = mMessageQueue.get(0)
         mMessageQueue.removeElementAt(0)
@@ -93,7 +91,7 @@ class ServerDispatcher : Thread {
                 sendMessageToAllClients(message)
             }
         } catch(ie: InterruptedException) {
-            logger.error("Innterrupted")
+            println("Innterrupted")
         }
     }
 }

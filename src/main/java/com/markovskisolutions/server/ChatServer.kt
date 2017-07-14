@@ -37,8 +37,7 @@ import com.markovskisolutions.client.Client;
  * and both its ClientListener and ClientSender threads are interrupted.
  */
 class ChatServer {
-    val logger = LoggerFactory.getLogger("ChatServer")
-    val LISTENING_PORT: Int = 2002
+    val LISTENING_PORT: Int = 20021
     var KEEP_ALIVE_MESSAGE: String = "!keep-alive"
     var CLIENT_READ_TIMEOUT: Int = 5 * 60 * 1000
     var mServerSocket: ServerSocket = ServerSocket()
@@ -53,9 +52,9 @@ class ChatServer {
     private fun bindServerSocket(): Unit {
         try {
             mServerSocket = ServerSocket(LISTENING_PORT)
-            logger.info("ChatServer started on port ${LISTENING_PORT} ")
+            println("ChatServer started on port ${LISTENING_PORT} ")
         } catch(ioex: IOException) {
-            logger.error("Can not start listening on port ${LISTENING_PORT} ")
+            println("Can not start listening on port ${LISTENING_PORT} ")
             ioex.printStackTrace()
             System.exit(-1)
         }
@@ -64,7 +63,7 @@ class ChatServer {
     private fun handleClientConnections(): Unit {
         while (true) {
             try {
-                var socket: Socket = mServerSocket!!.accept()
+                var socket: Socket = mServerSocket.accept()
                 var client: Client = Client()
                 client.mSocket = socket
                 var clientListener: ClientListener = ClientListener(client, mServerDispatcher)

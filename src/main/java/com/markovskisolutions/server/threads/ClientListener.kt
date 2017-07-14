@@ -25,7 +25,7 @@ class ClientListener : Thread {
     constructor(aClient: Client, aSrvDispatcher: ServerDispatcher) {
         mClient = aClient
         mServerDispatcher = aSrvDispatcher
-        var socket: Socket = aClient.mSocket
+        val socket: Socket = aClient.mSocket
         socket.setSoTimeout(ChatServer().CLIENT_READ_TIMEOUT)
         mSocketReader = BufferedReader(InputStreamReader(socket.getInputStream()))
     }
@@ -38,7 +38,7 @@ class ClientListener : Thread {
         try {
             while (!isInterrupted()) {
                 try {
-                    var message: String = mSocketReader.readLine()
+                    val message: String = mSocketReader.readLine()
 
                     mServerDispatcher.dispatchMessage(mClient, message);
                 } catch(ste: SocketTimeoutException) {
@@ -47,7 +47,7 @@ class ClientListener : Thread {
             }
 
         } catch(ioex: IOException) {
-            ioex.printStackTrace()
+          println("Lost connection")
             // Problem reading from socket (broken connection)
         }
         // Communication is broken. Interrupt both listener and

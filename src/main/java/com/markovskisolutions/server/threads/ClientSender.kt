@@ -65,7 +65,7 @@ class ClientSender : Thread {
     fun getNextMessageFromQueue(): String {
         while (mMessageQueue.size == 0)
             lock.wait()
-        var message: String = mMessageQueue.get(0)
+        val message: String = mMessageQueue.get(0)
         mMessageQueue.removeElementAt(0);
         return message;
     }
@@ -89,6 +89,7 @@ class ClientSender : Thread {
                 sendMessageToClient(message);
             }
         } catch(e: Exception) {
+            println("Communication problem")
         }
         mClient.mClientListener.interrupt()
         mServerDispatcher.deleteClient(mClient)
